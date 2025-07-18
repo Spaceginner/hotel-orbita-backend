@@ -27,10 +27,15 @@ class Department(models.Model):
 class Designation(models.Model):
     group = models.OneToOneField(Group, related_name='designation', on_delete=models.CASCADE)
     department = models.ForeignKey(Department, related_name='designations', related_query_name='designation', on_delete=models.CASCADE)
-    salary = models.DecimalField(max_digits=8, decimal_places=2)
 
     def __str__(self) -> str:
         return f"{self.group.name} ({self.department})"
+
+
+class DesignationSalary(models.Model):
+    designation = models.ForeignKey(Designation, related_name='salaries', related_query_name='salary', on_delete=models.CASCADE, null=False)
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, null=False)
+    salary = models.DecimalField(max_digits=8, decimal_places=2)
 
 
 class Staff(models.Model):
