@@ -13,6 +13,16 @@ class DesignationAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(models.DesignationSalary)
+class DesignationSalaryAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(models.HeadOfDepartment)
+class HodAdmin(admin.ModelAdmin):
+    pass
+
+
 @admin.register(models.Staff)
 class StaffAdmin(admin.ModelAdmin):
     pass

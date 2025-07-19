@@ -21,5 +21,5 @@ class DesignationViewSet(ReadOnlyModelViewSet):
 
 
 class StaffViewSet(ModelViewSet):
-    queryset = models.Staff.objects.all()
+    queryset = models.Staff.objects.order_by('pk')
     serializer_class = serializers.StaffSerializer

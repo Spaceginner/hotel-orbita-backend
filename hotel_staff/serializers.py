@@ -1,36 +1,36 @@
 import functools
 
+from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 
-from hotel.validators import is_digit, specific_length
 from . import models
 
 
 class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Staff
-        fields = 'id', 'img', 'date', 'name', 'designation', 'mobile', 'email', 'address', 'hod'
+        fields = 'pk', 'image_url', 'image', 'name', 'username', 'designation', 'mobile', 'email', 'address', 'hod', 'department'
 
-    id = serializers.IntegerField(source='pk', read_only=True)
-    img = serializers.ImageField(source='image')
-    date = serializers.DateTimeField(source='user.date_joined')
+    pk = serializers.IntegerField(read_only=True)
+    image_url = serializers.ImageField(source='image', read_only=True)
+    image = serializers.ImageField(write_only=True)
+    username = serializers.CharField(source='user.username')
     name = serializers.SerializerMethodField()
     designation = serializers.CharField(source='designation.group.name')
-    mobile = serializers.CharField(source='phone_number', validators=[
-        functools.partial(is_digit, message='В номере телефона допускаются лишь цифры', rest=True),
-        functools.partial(specific_length, length=10, message='Длина номера телефона должна быть 10 цифр, вышло {got}', rest=True)
-    ])
+    department = serializers.CharField(source='designation.department.name')
+    mobile = PhoneNumberField(source='phone_number')
     email = serializers.CharField(source='user.email')
     hod = serializers.SerializerMethodField()
 
     def get_name(self, s: models.Staff) -> str:
         return s.user.get_full_name() or s.user.username
 
-    def get_hod(self, s: models.Staff) -> str | None:
+    def get_hod(self, s: models.Staff) -> bool:
         try:
-            return s.hod.department.name
+            _ = s.hod
+            return True
         except models.Staff.hod.RelatedObjectDoesNotExist:
-            return None
+            return False
 
 
 class DepartmentSerializer(serializers.ModelSerializer):

@@ -7,3 +7,10 @@ class SignInSerializer(serializers.Serializer):
 
     username = serializers.CharField()
     password = serializers.CharField()
+
+
+class TokenSerializer(serializers.Serializer):
+    class Meta:
+        fields = 'token'
+
+    token = serializers.CharField()

@@ -7,25 +7,31 @@ from hotel_finances.models import Price
 
 
 class IndividualNationality(models.Model):
-    code = models.CharField(max_length=3, blank=False, primary_key=True, validators=[MinLengthValidator(3)])
+    code = models.CharField(max_length=3, primary_key=True, validators=[MinLengthValidator(3)])
+
+    def __str__(self) -> str:
+        return f"{self.code}"
 
 
 class IndividualClient(models.Model):
-    first_name = models.CharField(max_length=50, null=False, blank=False)
-    last_name = models.CharField(max_length=50, null=False, blank=False)
-    patronymic = models.CharField(max_length=50, null=False, blank=True)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    patronymic = models.CharField(max_length=50, blank=True)
 
     nationality = models.ForeignKey(IndividualNationality, related_name='clients', related_query_name='client', on_delete=models.SET_NULL, null=True)
 
-    birthday = models.DateField(null=False)
+    birthday = models.DateField()
 
-    passport_number = models.CharField(null=False)
-    passport_date = models.DateField(null=False)
-    passport_issuer = models.CharField(null=False)
+    passport_number = models.CharField()
+    passport_date = models.DateField()
+    passport_issuer = models.CharField()
+
+    def __str__(self) -> str:
+        return f"{self.first_name[0]}. {self.patronymic and f"{self.patronymic}."} {self.last_name}"
 
 
 class PassportImage(models.Model):
-    individual = models.ForeignKey(IndividualClient, related_name='passport_images', related_query_name='passport_image', on_delete=models.CASCADE, null=False)
+    individual = models.ForeignKey(IndividualClient, related_name='passport_images', related_query_name='passport_image', on_delete=models.CASCADE)
     page = models.IntegerField(validators=[MinValueValidator(1)])
 
     def _get_image_path(self, filename: str) -> str:
@@ -33,13 +39,15 @@ class PassportImage(models.Model):
 
     image = models.ImageField(upload_to=_get_image_path)
 
+    def __str__(self) -> str:
+        return f"{self.individual}'s №{self.page}"
+
 
 class OrganisationClient(models.Model):
     name = models.CharField(max_length=300, blank=False, null=False)
 
-
-class ClientStatus(models.Model):
-    code = models.CharField(max_length=5, blank=False, primary_key=True)
+    def __str__(self) -> str:
+        return f"«{self.name}»"
 
 
 class Client(models.Model):
@@ -58,10 +66,28 @@ class Client(models.Model):
     individual = models.OneToOneField(IndividualClient, related_name='client', on_delete=models.CASCADE, null=True)
     organisation = models.OneToOneField(OrganisationClient, related_name='client', on_delete=models.CASCADE, null=True)
 
-    taxpayer_number = models.CharField(max_length=20, null=False, blank=False, unique=True)
-    phone_number = PhoneNumberField(null=False, blank=False, unique=True)
-    email = models.EmailField(null=True, blank=False, unique=True)
+    taxpayer_number = models.CharField(max_length=20, unique=True)
+    phone_number = PhoneNumberField(unique=True)
+    email = models.EmailField(blank=True, unique=True)
 
     preferences = models.TextField(max_length=3000)
 
+    class Status(models.TextChoices):
+        STANDARD = "SD", "Standard"
+        VIP = "VP", "VIP"
+
+    status = models.CharField(max_length=2, choices=Status, default=Status.STANDARD)
+
     discount = models.ForeignKey(Price, on_delete=models.SET_NULL, null=True)
+
+    @property
+    def status_(self) -> Status:
+        return self.Status(self.status)
+
+    def __str__(self) -> str:
+        if self.individual is not None:
+            specific = self.individual
+        else:
+            specific = self.organisation
+
+        return f"{specific} ({self.status_})"

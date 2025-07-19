@@ -20,17 +20,17 @@ class ReservationPackage(models.Model):
 
 # fixme add a shit ton of validators to stay in touch with the package & available options vs included etc
 class Reservation(models.Model):
-    hotel = models.ForeignKey(Hotel, related_name='reservations', related_query_name='reservation', on_delete=models.CASCADE, null=True)
-    client = models.ForeignKey(Client, related_name='reservations', related_query_name='reservation', on_delete=models.CASCADE, null=True)
+    hotel = models.ForeignKey(Hotel, related_name='reservations', related_query_name='reservation', on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, related_name='reservations', related_query_name='reservation', on_delete=models.CASCADE)
 
     guests_count = models.IntegerField(validators=[MinValueValidator(1)])
 
-    date_in = models.DateField(null=False)
-    planned_date_out = models.DateField(null=False)
+    date_in = models.DateField()
+    planned_date_out = models.DateField()
     factual_date_out = models.DateField(null=True)
 
-    early_check_in = models.BooleanField(null=False, default=False)
-    late_check_out = models.BooleanField(null=False, default=False)
+    early_check_in = models.BooleanField(default=False)
+    late_check_out = models.BooleanField(default=False)
 
     package = models.ForeignKey(ReservationPackage, related_name='reservations', related_query_name='reservation', on_delete=models.SET_NULL, null=True)
 
@@ -43,7 +43,7 @@ class Reservation(models.Model):
         CASH = 'CS', 'Cash'
         PREPAID = 'PP', 'Pre-Paid'
 
-    payment_type = models.CharField(max_length=2, choices=PaymentType, null=False)
+    payment_type = models.CharField(max_length=2, choices=PaymentType)
 
     class Status(models.TextChoices):
         RESERVED = 'RR', 'Reserved'
@@ -53,11 +53,11 @@ class Reservation(models.Model):
         CHECKED_IN = 'CI', 'Checked In'
         CHECKED_OUT = 'CO', 'Checked Out'
 
-    status = models.CharField(max_length=2, choices=Status, null=False)
+    status = models.CharField(max_length=2, choices=Status)
 
 
 class RoomReservation(models.Model):
-    reservation = models.ForeignKey(Reservation, related_name='reserved_rooms', related_query_name='reserved_room', on_delete=models.CASCADE, null=False)
+    reservation = models.ForeignKey(Reservation, related_name='reserved_rooms', related_query_name='reserved_room', on_delete=models.CASCADE)
     room = models.ForeignKey(Room, related_name='reservations', related_query_name='reservation', on_delete=models.SET_NULL, null=True)
     guests_count = models.IntegerField(validators=[MinValueValidator(1)])
     additional_options = models.ManyToManyField(AdditionalOption, related_name='reservations', related_query_name='reservation')

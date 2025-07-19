@@ -4,9 +4,9 @@ from django.contrib.auth.models import User, Group
 from django.db import models
 from django.db.models import Sum
 from django.db.models.aggregates import Count
+from phonenumber_field.modelfields import PhoneNumberField
 
 from hotel.models import Hotel
-from hotel.validators import is_digit, specific_length
 
 
 class Department(models.Model):
@@ -33,8 +33,8 @@ class Designation(models.Model):
 
 
 class DesignationSalary(models.Model):
-    designation = models.ForeignKey(Designation, related_name='salaries', related_query_name='salary', on_delete=models.CASCADE, null=False)
-    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, null=False)
+    designation = models.ForeignKey(Designation, related_name='salaries', related_query_name='salary', on_delete=models.CASCADE)
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
     salary = models.DecimalField(max_digits=8, decimal_places=2)
 
 
@@ -42,10 +42,7 @@ class Staff(models.Model):
     user = models.OneToOneField(User, related_name='staff', on_delete=models.CASCADE, primary_key=True)
     hotel = models.ForeignKey(Hotel, related_name='staff', on_delete=models.SET_NULL, null=True)
     salary_coef = models.DecimalField(max_digits=6, decimal_places=3)
-    phone_number = models.CharField(validators=[
-        functools.partial(is_digit, message='В номере телефона допускаются лишь цифры'),
-        functools.partial(specific_length, length=10, message='Длина номера телефона должна быть 10 цифр, вышло {got}')
-    ])
+    phone_number = PhoneNumberField()
     address = models.CharField(max_length=300)
     designation = models.ForeignKey(Designation, related_name='staff', on_delete=models.SET_NULL, null=True)
 

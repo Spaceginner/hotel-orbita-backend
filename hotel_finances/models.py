@@ -13,10 +13,22 @@ class Price(models.Model):
             )
         ]
 
-    fixed = models.DecimalField(max_digits=8, decimal_places=2, null=True)
-    relative = models.DecimalField(max_digits=6, decimal_places=3, null=True)
+    fixed = models.DecimalField(max_digits=8, decimal_places=2, null=True, default=None, blank=True)
+    relative = models.DecimalField(max_digits=6, decimal_places=3, null=True, default=None, blank=True)
+
+    def __str__(self) -> str:
+        if self.fixed is not None:
+            return f"{self.fixed}"
+        else:
+            return f"{self.relative}%"
 
 
 class SeasonSale(models.Model):
     hotel = models.ForeignKey(Hotel, related_name='season_sales', related_query_name='season_sale', on_delete=models.CASCADE, null=False)
     discount = models.ForeignKey(Price, on_delete=models.SET_NULL, null=True)
+
+    date_from = models.DateField()
+    date_to = models.DateField()
+
+    def __str__(self) -> str:
+        return f"{self.date_from.strftime("%d.%m")}-{self.date_to.strftime("%d.%m")} {self.discount}"

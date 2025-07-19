@@ -29,7 +29,7 @@ SECRET_KEY = "django-insecure-8o4$d9kckok8wauiotb-@+9(i0xc9h6rig4k4egxr1@uhi3!n7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost']
 
 CORS_ALLOWED_ORIGINS = ['http://localhost:4200', 'http://localhost:5173', 'http://localhost:8080']
 
@@ -48,6 +48,9 @@ INSTALLED_APPS = [
 
     "rest_framework",
     "rest_framework.authtoken",
+    "django_filters",
+    
+    "drf_spectacular",
 
     "hotel.apps.HotelConfig",
     "hotel_staff.apps.HotelStaffConfig",
@@ -152,5 +155,19 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.DjangoModelPermissions'
-    ]
+    ],
+    'PAGE_SIZE': 40,
+    'DEFAULT_PAGINATION_CLASS': 'hotel.pagination.SimplePagination',
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Hotel Management System API',
+    'DESCRIPTION': 'The API to automate the system',
+    'VERSION': '0.1.0',
 }
