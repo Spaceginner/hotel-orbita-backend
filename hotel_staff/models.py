@@ -39,6 +39,11 @@ class DesignationSalary(models.Model):
 
 
 class Staff(models.Model):
+    class Meta:
+        permissions = [
+            ('edit_mission_critical', 'Manage employee\'s role and salary')
+        ]
+
     user = models.OneToOneField(User, related_name='staff', on_delete=models.CASCADE, primary_key=True)
     hotel = models.ForeignKey(Hotel, related_name='staff', on_delete=models.SET_NULL, null=True)
     salary_coef = models.DecimalField(max_digits=6, decimal_places=3)
@@ -46,8 +51,8 @@ class Staff(models.Model):
     address = models.CharField(max_length=300)
     designation = models.ForeignKey(Designation, related_name='staff', on_delete=models.SET_NULL, null=True)
 
-    def _image_path(self, filename: str) -> str:
-        return f'staff/{self.user.id}/{filename}'
+    def _image_path(self, _filename: str) -> str:
+        return f'staff/{self.user.id}/pfp'
 
     image = models.ImageField(upload_to=_image_path, null=True)
 
