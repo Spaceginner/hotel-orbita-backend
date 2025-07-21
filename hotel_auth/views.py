@@ -3,6 +3,7 @@ import datetime
 from django.contrib.auth import authenticate
 from drf_spectacular.utils import extend_schema
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -35,8 +36,9 @@ class SignInApiView(APIView):
 
 
 class SignOutApiView(APIView):
+    authentication_classes = [IsAuthenticated]
+
     def post(self, req: Request) -> Response:
-        if req.auth is not None:
-            req.auth.delete()
+        req.auth.delete()
 
         return Response(status=200)

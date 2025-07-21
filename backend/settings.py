@@ -153,7 +153,6 @@ REST_FRAMEWORK = {
     'UPLOADED_FILES_USE_URL': True,
     'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.TokenAuthentication'],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.DjangoModelPermissions'
     ],
     'PAGE_SIZE': 40,
