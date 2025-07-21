@@ -10,7 +10,7 @@ class Hotel(models.Model):
 
     image = models.ImageField(upload_to=_get_image_path, null=True)
     address = models.CharField(max_length=300, blank=True)
-    phone_numer = PhoneNumberField(blank=True)
+    phone_number = PhoneNumberField(blank=True)
     email = models.EmailField(blank=True)
     website = models.URLField(blank=True)
 
