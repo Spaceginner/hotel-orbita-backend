@@ -1,3 +1,10 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
 
-# Create your views here.
+from . import models, serializers
+
+
+class PriceViewSet(ModelViewSet):
+    queryset = models.Price.objects.all()
+    serializer_class = serializers.PriceSerializer
+
+    pagination_class = None

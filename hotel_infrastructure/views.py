@@ -42,3 +42,17 @@ class FloorViewSet(ModelViewSet):
             building=building,
             level=serializer.validated_data['level'],
         )
+
+
+class RoomCategoryViewSet(ModelViewSet):
+    queryset = models.RoomCategory.objects.all()
+    serializer_class = serializers.RoomCategorySerializer
+
+    pagination_class = None
+
+
+class RoomFeatureViewSet(ModelViewSet):
+    queryset = models.RoomFeature.objects.all()
+    serializer_class = serializers.RoomFeatureSerializer
+
+    pagination_class = None

@@ -1,3 +1,10 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
 
-# Create your views here.
+from . import models, serializers
+
+
+class ReservationPackageViewSet(ModelViewSet):
+    queryset = models.ReservationPackage.objects.all()
+    serializer_class = serializers.ReservationPackageSerializer
+
+    pagination_class = None

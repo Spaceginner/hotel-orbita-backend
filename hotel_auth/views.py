@@ -36,7 +36,7 @@ class SignInApiView(APIView):
 
 
 class SignOutApiView(APIView):
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, req: Request) -> Response:
         req.auth.delete()

@@ -19,3 +19,19 @@ class BuildingSerializer(serializers.ModelSerializer):
 
     pk = serializers.IntegerField(read_only=True)
     floors = FloorSerializer(many=True, read_only=True)
+
+
+class RoomCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.RoomCategory
+        fields = 'pk', 'name', 'description', 'price'
+
+    pk = serializers.IntegerField(read_only=True)
+
+
+class RoomFeatureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.RoomFeature
+        fields = 'pk', 'name', 'description'
+
+    pk = serializers.IntegerField(read_only=True)
